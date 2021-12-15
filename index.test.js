@@ -9,16 +9,18 @@ test('añadiendo ship tam 3', () => {
 });
 test('probando daño', () => {
   ship.hit(1)
-  expect(ship.body).toStrictEqual([1,0,1]);
+  expect(ship.body).toStrictEqual([1,0,3]);
 });
 test('probando hundimiento', () => {
  
   expect(ship.isSunk()).toStrictEqual(false);
 });
 test('probando hundimiento', () => {
+  console.log(ship.body)
   ship.hit(0)
-  
+  console.log(ship.body)
   ship.hit(2)
+  console.log(ship.body)
   expect(ship.isSunk()).toStrictEqual(true);
 });
 

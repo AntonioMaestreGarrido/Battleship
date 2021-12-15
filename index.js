@@ -2,15 +2,24 @@
 
 //import { array } from "yargs";
 
+
+
+var hola
+console.log(hola)
+
+
+
+
+
 const factoryShips = (size) => {
   var body = new Array(size);
   const sunk = false;
-  var i
+  var IDnumber
   const ID=()=>{
     
-    if (this.i==undefined){this.i=0}
-    this.i++
-    return this.i
+    if (typeof(factoryShips.IDnumber)==="undefined"){factoryShips.IDnumber=0}
+    factoryShips.IDnumber++
+    return factoryShips.IDnumber
   }
   
   var ini = (body) => {
@@ -27,7 +36,7 @@ const factoryShips = (size) => {
   const isSunk = () => {
     let sunk = true;
     body.forEach((p) => {
-      if (p !== 1) {
+      if (p !== 0) {
         sunk = false;
       }
     });
@@ -53,12 +62,7 @@ const Gameboard = (size) => {
   make2Darray(map);
   return { map };
 };
-var b = Gameboard(8);
-const ship1=factoryShips(3)
-const ship2=factoryShips(8)
-console.log(ship1)
-console.log(ship2)
-const ship3=factoryShips(8)
-console.log(ship3)
 
-//export { Gameboard, factoryShips };
+
+export { Gameboard, factoryShips };
+//module.exports{ Gameboard, factoryShips} 
