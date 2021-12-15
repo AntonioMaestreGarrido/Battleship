@@ -1,0 +1,56 @@
+Arguments: 
+  /home/antonno/.nvm/versions/node/v14.18.1/bin/node /home/antonno/.nvm/versions/node/v14.18.1/bin/yarn set version berry
+
+PATH: 
+  /home/antonno/.nvm/versions/node/v14.18.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.22.17
+
+Node version: 
+  14.18.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/antonno/Odin/JS Path/Battleship/package.json: Unexpected token , in JSON at position 175
+      at JSON.parse (<anonymous>)
+      at /home/antonno/.nvm/versions/node/v14.18.1/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/home/antonno/.nvm/versions/node/v14.18.1/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /home/antonno/.nvm/versions/node/v14.18.1/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "battleship",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "directories": {
+      "test": "test"
+    },
+    "scripts": {
+      "test": "jest"
+    }
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/AntonioMaestreGarrido/Battleship.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/AntonioMaestreGarrido/Battleship/issues"
+    },
+    "homepage": "https://github.com/AntonioMaestreGarrido/Battleship#readme",
+    "devDependencies": {
+      "jest": "^27.4.5"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

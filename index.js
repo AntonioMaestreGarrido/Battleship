@@ -1,46 +1,64 @@
+//factorry ships
 
+//import { array } from "yargs";
 
-//factorry ships 
-
-const factoryShips=(size)=>{
-    var body=new Array (size)
-    const sunk=false
+const factoryShips = (size) => {
+  var body = new Array(size);
+  const sunk = false;
+  var i
+  const ID=()=>{
     
+    if (this.i==undefined){this.i=0}
+    this.i++
+    return this.i
+  }
+  
+  var ini = (body) => {
+    for (let i = 0; i < body.length; i++) {
+      body[i] = ID();
+    }
+  };
+
+  const hit = (p) => {
+    if (body[p] !==0) {
+      body[p] = 0;
+    }
+  };
+  const isSunk = () => {
+    let sunk = true;
+    body.forEach((p) => {
+      if (p !== 1) {
+        sunk = false;
+      }
+    });
 
    
-        
-    var ini=(body)=>{
-        for (let i = 0; i < body.length; i++) {
-             body[i]=1;
-            
-        }
-    };
 
-    const hit=(p)=>{if (body[p]===1){body[p]=0}
+    return sunk;
+  };
 
+  ini(body);
+
+  return { body, hit, isSunk };
+};
+
+const Gameboard = (size) => {
+  const map = new Array(size);
+  const make2Darray = (map) => {
+    for (let i = 0; i < map.length; i++) {
+      map[i] = new Array(size);
     }
-    const isSunk=()=>{
-        let sunk=true
-        body.forEach(p =>{
-            
-            if(p===1){sunk= false};
-        })
-        console.log(sunk)
-        return sunk
-    }
+  };
 
-    ini(body)
+  make2Darray(map);
+  return { map };
+};
+var b = Gameboard(8);
+const ship1=factoryShips(3)
+const ship2=factoryShips(8)
+console.log(ship1)
+console.log(ship2)
+const ship3=factoryShips(8)
+console.log(ship3)
 
-
-    return {body,hit,isSunk}
-}
-
-function sum(a, b) {
-    return a + b;
-  }
-  module.exports = sum;
-const a=factoryShips(7)
-console.log (a)
-a.hit(1)
-a.isSunk()
-module.exports =factoryShips
+//export { Gameboard, factoryShips };
