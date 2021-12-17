@@ -1,4 +1,31 @@
+*{
+    box-sizing: border-box;
+}
 h1{
     font-size: 100px;
     color: blue;
+}
+
+#general{
+    display: flex;
+    width: 900px;
+    background-color: blue;
+    margin: auto;
+}
+.board{
+    display: flex;
+    flex-wrap: wrap;
+    background-color: aqua;
+    margin: auto;
+   max-width: 400px;
+    height: 400px;
+}
+.casilla{
+    font-size: 35px;
+    width: 40px;
+    height: 40px;
+    border: solid 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center
 }
