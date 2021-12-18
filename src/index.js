@@ -5,9 +5,19 @@
 //import "./fake"
 //import { mock } from "./fake";
 //mock();
-import {test,createBoard}from  "./dom.js";
+import { test, createBoard } from "./dom.js";
 
 test();
+var flotaStandar = [
+  ["portaaviones", 5],
+
+ 
+  ["destructor", 4],
+  ["acorazado", 3],
+  ["acorazado", 3],
+  ["submarino", 2],
+];
+console.log(flotaStandar);
 
 const factoryShips = (name, size) => {
   var body = new Array(size);
@@ -130,32 +140,83 @@ const factoryPlayer = (nombre) => {
 let tablero = Gameboard(10);
 console.log(tablero);
 let p1 = factoryPlayer("pp");
-
+createBoard(tablero);
 console.log(p1);
-p1.fleet[0].coord[0][0] = "0";
-p1.fleet[0].coord[1][0] = "1";
-p1.fleet[0].coord[2][0] = "2";
-p1.fleet[0].coord[3][0] = "3";
-p1.fleet[0].coord[4][0] = "4";
 
-p1.fleet[0].coord[0][1] = "0";
-p1.fleet[0].coord[1][1] = "0";
-p1.fleet[0].coord[2][1] = "0";
-p1.fleet[0].coord[3][1] = "0";
-p1.fleet[0].coord[4][1] = "0";
+const putRandomFleet = (tablero) => {
+  let boardSize = 10;
 
-p1.fleet[1].coord[0][0] = "6";
-p1.fleet[1].coord[1][0] = "6";
+  for (let i = 0; i < flotaStandar.length; i++) {
+    var vertical = false;
+    var maxX;
+    var maxY;
+    console.log("longitud=" + flotaStandar[i][1]);
 
-p1.fleet[1].coord[0][1] = "7";
-p1.fleet[1].coord[1][1] = "8";
+    if (Math.floor(Math.random() * 2) == 0) {
+      vertical = true;
+    }
+    var tam = flotaStandar[i][1];
+    if (vertical) {
+      maxY = 10 - tam;
+      maxX = 10;
+    } else {
+      {
+        maxX = 10 - tam;
+        maxY = 10;
+      }
+    }
+    console.log(tam, maxX, maxY);
+    var x = Math.floor(Math.random() * maxX);
+    var y = Math.floor(Math.random() * maxY);
+    while(!checkIfPossible(tablero, x, y, vertical, tam))
+    { x = Math.floor(Math.random() * maxX);
+     y = Math.floor(Math.random() * maxY);}
+      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+    console.log(checkIfPossible(tablero, x, y, vertical, tam))
 
-p1.fleet.forEach((ship) => {
-  tablero.deployShip(ship);
-});
-//console.log(tablero.receiveAttack(0,0))
+    
+      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+      tablero.map[x][y] = 1;
+      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+      createBoard(tablero);
+      for (let i = 1; i < tam; i++) {
+        console.log(x, y);
+        if (vertical ? y++ : x++);
+        console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+        tablero.map[x][y] = 1;
+        console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+        createBoard(tablero);
+      }
+    
+  }
 
-p1.resolveAttack(tablero.receiveAttack(0, 0));
-createBoard(tablero)
-export { Gameboard, factoryShips };
-//module.exports{ Gameboard, factoryShips}
+  console.log(vertical);
+
+  createBoard(tablero);
+};
+putRandomFleet(tablero);
+
+function checkIfPossible(tablero, x, y, vertical, size) {
+  var possible = true;
+  if (vertical) {
+    let xPlus
+    let xMinus
+    if(x>0){xMinus=(x-1)}
+    if(x<9){xPlus=(x+1)}
+    for (let i = 0; i < size; i++) {
+      if (tablero.map[x][y + i] != 0 ||tablero.map[xMinus][y + i] != 0||tablero.map[xPlus][y + i] != 0) {
+        possible = false;
+      }
+    }
+  } else {
+    let yPlus
+    let yMinus
+    if(y>0){yMinus=(y-1)}
+    if(y<9){yPlus=(y+1)}
+    for (let i = 0; i < size; i++) {
+      if (tablero.map[x + i][y] != 0||tablero.map[x + i][yPlus] != 0||tablero.map[x + i][yMinus] != 0) {
+        possible = false;
+      }
+    }
+  }return possible
+}
