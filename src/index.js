@@ -7,15 +7,13 @@
 //mock();
 import { test, createBoard } from "./dom.js";
 
-test();
 var flotaStandar = [
-  ["portaaviones", 5],
-
- 
-  ["destructor", 4],
+  
+  ["portaaviones", 6],
+  ["destructor", 5],
   ["acorazado", 3],
-  ["acorazado", 3],
-  ["submarino", 2],
+  ["destructor", 3],
+  ["acorazado", 2],
 ];
 console.log(flotaStandar);
 
@@ -151,43 +149,59 @@ const putRandomFleet = (tablero) => {
     var maxX;
     var maxY;
     console.log("longitud=" + flotaStandar[i][1]);
+    if (Math.floor(Math.random() * 2) ? (vertical = true) : (vertical = false));
 
-    if (Math.floor(Math.random() * 2) == 0) {
-      vertical = true;
-    }
     var tam = flotaStandar[i][1];
     if (vertical) {
-      maxY = 10 - tam;
-      maxX = 10;
+      maxY = 9 - tam;
+      maxX = 9;
     } else {
       {
-        maxX = 10 - tam;
-        maxY = 10;
+        maxX = 9 - tam;
+        maxY = 9;
       }
     }
-    console.log(tam, maxX, maxY);
+    console.log("tamaños maximos", tam, maxX, maxY);
+
     var x = Math.floor(Math.random() * maxX);
     var y = Math.floor(Math.random() * maxY);
-    while(!checkIfPossible(tablero, x, y, vertical, tam))
-    { x = Math.floor(Math.random() * maxX);
-     y = Math.floor(Math.random() * maxY);}
-      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
-    console.log(checkIfPossible(tablero, x, y, vertical, tam))
+    while (!checkIfPossible(tablero, x, y, vertical, tam)) {
+      if (
+        Math.floor(Math.random() * 2) == 0
+          ? (vertical = true)
+          : (vertical = false)
+      );
+      if (vertical) {
+        maxY = 9 - tam;
+        maxX = 9;
+      } else {
+        {
+          maxX = 9 - tam;
+          maxY = 9;
+        }
+      }
 
-    
+      x = Math.floor(Math.random() * maxX);
+      y = Math.floor(Math.random() * maxY);
+    }
+    console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+
+    console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+    tablero.map[x][y] = 1;
+    console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+    createBoard(tablero);
+    for (let i = 1; i < tam; i++) {
+      console.log(x, y);
+      if (vertical === true) {
+        y++;
+      } else {
+        x++;
+      }
       console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
       tablero.map[x][y] = 1;
       console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
       createBoard(tablero);
-      for (let i = 1; i < tam; i++) {
-        console.log(x, y);
-        if (vertical ? y++ : x++);
-        console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
-        tablero.map[x][y] = 1;
-        console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
-        createBoard(tablero);
-      }
-    
+    }
   }
 
   console.log(vertical);
@@ -198,25 +212,83 @@ putRandomFleet(tablero);
 
 function checkIfPossible(tablero, x, y, vertical, size) {
   var possible = true;
+
   if (vertical) {
-    let xPlus
-    let xMinus
-    if(x>0){xMinus=(x-1)}
-    if(x<9){xPlus=(x+1)}
+    let xPlus = x;
+    let xMinus = x;
+    if (x > 0) {
+      xMinus = x - 1;
+    }
+    if (x < 9) {
+      xPlus = x + 1;
+    }
+    /////////////////////
+    let yMinus = y;
+    let yMax = y;
+    if (y > 0) {
+      yMinus = y - 1;
+    }
+    if (y + size  < 9) {
+      yMax = y + size;
+    }
+    if (tablero.map[x][yMinus]!=0 || tablero.map[x][yMax] != 0) {
+      possible = false;
+      return possible;
+    }
+    ///////////////////////////
     for (let i = 0; i < size; i++) {
-      if (tablero.map[x][y + i] != 0 ||tablero.map[xMinus][y + i] != 0||tablero.map[xPlus][y + i] != 0) {
+      console.log(tablero.map, x, y, vertical, size);
+      if (
+        tablero.map[x][y + i] != 0 ||
+        tablero.map[xMinus][y + i] != 0 ||
+        tablero.map[xPlus][y + i] != 0
+      ) {
         possible = false;
+        return possible;
       }
     }
   } else {
-    let yPlus
-    let yMinus
-    if(y>0){yMinus=(y-1)}
-    if(y<9){yPlus=(y+1)}
+    /////////////////////
+    let xMinus = x;
+    let xMax = x;
+    if (x > 0) {
+      xMinus = x - 1;
+    }
+    if (x + size  < 9) {
+      xMax = x+size ;
+    }
+    console.log(x,y,xMax,xMinus)
+    if (tablero.map[xMax][y]!=0 || tablero.map[xMinus][y] != 0) {
+      possible = false;
+      return possible;
+    }
+    ///////////////////////////
+
+    let yPlus = y;
+    let yMinus = y;
+    if (y > 0) {
+      yMinus = y - 1;
+    }
+    if (y < 9) {
+      yPlus = y + 1;
+    }
     for (let i = 0; i < size; i++) {
-      if (tablero.map[x + i][y] != 0||tablero.map[x + i][yPlus] != 0||tablero.map[x + i][yMinus] != 0) {
+      let ytest = y;
+      console.log("check");
+
+      console.log(tablero.map, x, y, vertical, size);
+      let testststs = y;
+      console.table(x, size, i, x + i);
+
+      if (
+        tablero.map[x + i][y] != 0 ||
+        tablero.map[x + i][yPlus] != 0 ||
+        tablero.map[x + i][yMinus] != 0
+      ) {
         possible = false;
+        return possible;
       }
     }
-  }return possible
+  }
+  return possible;
 }
