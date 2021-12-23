@@ -2,20 +2,17 @@
 
 //import { array } from "yargs";
 //import './styles.css';
-//import "./fake"
-//import { mock } from "./fake";
-//mock();
+
 import { test, createBoard } from "./dom.js";
+import { checkIfPossible, test2 } from "./testShip.js";
 
 var flotaStandar = [
-  
   ["portaaviones", 6],
   ["destructor", 5],
   ["acorazado", 3],
   ["destructor", 3],
   ["acorazado", 2],
 ];
-console.log(flotaStandar);
 
 const factoryShips = (name, size) => {
   var body = new Array(size);
@@ -72,8 +69,6 @@ const Gameboard = (size) => {
         map[i][j] = 0;
       }
     }
-    console.log("map");
-    console.log(map);
   };
 
   make2Darray(map);
@@ -82,7 +77,6 @@ const Gameboard = (size) => {
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map.length; j++) {
         if (map[i][j] > 0) {
-          console.log("la casilla" + i + " " + j + " es igual a " + map[i][j]);
           return false;
         }
       }
@@ -103,23 +97,21 @@ const Gameboard = (size) => {
     }
   };
   const deployShip = (ship) => {
-    console.log(map);
     for (let i = 0; i < ship.body.length; i++) {
       let x = ship.coord[i][0];
       let y = ship.coord[i][1];
       map[x][y] = ship.body[i];
     }
-    console.log(map);
   };
   return { map, isGameOver, receiveAttack, deployShip };
 };
 
 const factoryPlayer = (nombre) => {
   const fleet = new Array();
-  let a = factoryShips("portaaviones", 5);
-  let b = factoryShips("submarino", 2);
-  fleet.push(a);
-  fleet.push(b);
+  flotaStandar.forEach((ship) => {
+
+    fleet.push(factoryShips(ship[0],ship[1]));
+  });
   const resolveAttack = (n) => {
     fleet.forEach((ship) => {
       let position = 0;
@@ -208,87 +200,69 @@ const putRandomFleet = (tablero) => {
 
   createBoard(tablero);
 };
-putRandomFleet(tablero);
 
-function checkIfPossible(tablero, x, y, vertical, size) {
-  var possible = true;
+putFleet(e);
+var n=0
+function putFleet(e) {
+  let n=1
+  var size=player.fleet[1].body.length
+  var vertical=true
+  const floatingship=(vertical ,size)
+   
+  
+    
+  
+ 
+}
+function setListener(){
+  var hola="que tal"
+  const casillas = document.querySelectorAll(".casilla");
+  casillas.forEach((casilla) => {
+    casilla.addEventListener("mouseenter",(e,vertical,size) )    ;
+}}
 
+function floatingFleet( tablero,  vertical, size,e) {
+  let x=getX(e.target)
+  let y=getY(e.target)
+  
+  console.log("coordenadas", x, y);
+  if (checkIfPossible(tablero, x, y, vertical, size)) {
+    drawShip(tablero, x, y, true, 4);
+    putFleet();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getX(element) {
+  return parseInt(element.getAttribute("x"));
+}
+
+function getY(element) {
+  return parseInt(element.getAttribute("y"));
+}
+function drawShip(tablero, x, y, vertical, size) {
+  +console.log(tablero);
   if (vertical) {
-    let xPlus = x;
-    let xMinus = x;
-    if (x > 0) {
-      xMinus = x - 1;
-    }
-    if (x < 9) {
-      xPlus = x + 1;
-    }
-    /////////////////////
-    let yMinus = y;
-    let yMax = y;
-    if (y > 0) {
-      yMinus = y - 1;
-    }
-    if (y + size  < 9) {
-      yMax = y + size;
-    }
-    if (tablero.map[x][yMinus]!=0 || tablero.map[x][yMax] != 0) {
-      possible = false;
-      return possible;
-    }
-    ///////////////////////////
     for (let i = 0; i < size; i++) {
-      console.log(tablero.map, x, y, vertical, size);
-      if (
-        tablero.map[x][y + i] != 0 ||
-        tablero.map[xMinus][y + i] != 0 ||
-        tablero.map[xPlus][y + i] != 0
-      ) {
-        possible = false;
-        return possible;
-      }
-    }
-  } else {
-    /////////////////////
-    let xMinus = x;
-    let xMax = x;
-    if (x > 0) {
-      xMinus = x - 1;
-    }
-    if (x + size  < 9) {
-      xMax = x+size ;
-    }
-    console.log(x,y,xMax,xMinus)
-    if (tablero.map[xMax][y]!=0 || tablero.map[xMinus][y] != 0) {
-      possible = false;
-      return possible;
-    }
-    ///////////////////////////
-
-    let yPlus = y;
-    let yMinus = y;
-    if (y > 0) {
-      yMinus = y - 1;
-    }
-    if (y < 9) {
-      yPlus = y + 1;
-    }
-    for (let i = 0; i < size; i++) {
-      let ytest = y;
-      console.log("check");
-
-      console.log(tablero.map, x, y, vertical, size);
-      let testststs = y;
-      console.table(x, size, i, x + i);
-
-      if (
-        tablero.map[x + i][y] != 0 ||
-        tablero.map[x + i][yPlus] != 0 ||
-        tablero.map[x + i][yMinus] != 0
-      ) {
-        possible = false;
-        return possible;
-      }
+      tablero.map[x][y + i] = 1;
     }
   }
-  return possible;
+  if (!vertical) {
+    for (let i = 0; i < size; i++) {
+      tablero.map[x + i][y] = 1;
+    }
+  }
+  createBoard(tablero);
 }
