@@ -70,7 +70,6 @@ const Gameboard = (size) => {
       }
     }
   };
-
   make2Darray(map);
 
   const isGameOver = () => {
@@ -109,8 +108,7 @@ const Gameboard = (size) => {
 const factoryPlayer = (nombre) => {
   const fleet = new Array();
   flotaStandar.forEach((ship) => {
-
-    fleet.push(factoryShips(ship[0],ship[1]));
+    fleet.push(factoryShips(ship[0], ship[1]));
   });
   const resolveAttack = (n) => {
     fleet.forEach((ship) => {
@@ -201,49 +199,57 @@ const putRandomFleet = (tablero) => {
   createBoard(tablero);
 };
 
-putFleet(e);
-var n=0
-function putFleet(e) {
-  let n=1
-  var size=player.fleet[1].body.length
-  var vertical=true
-  const floatingship=(vertical ,size)
-   
-  
-    
-  
- 
-}
-function setListener(){
-  var hola="que tal"
+function setListener() {
   const casillas = document.querySelectorAll(".casilla");
   casillas.forEach((casilla) => {
-    casilla.addEventListener("mouseenter",(e,vertical,size) )    ;
-}}
+    //casilla.addEventListener("mouseenter", putFleet);
+    casilla.addEventListener("click", putFleet);
+    
+  });
+}
 
-function floatingFleet( tablero,  vertical, size,e) {
-  let x=getX(e.target)
-  let y=getY(e.target)
+setListener();
+var n = 0;
+function putFleet(e) {
+  let x = getX(e.target);
+  let y = getY(e.target);
   
+  var tam = p1.fleet[n].body.length;
+  var vertical = true;
+  console.log(checkIfPossible(tablero, x, y, vertical, tam))
+  if (checkIfPossible(tablero, x, y, vertical, tam)){
+    for (let i = 0; i < tam; i++) {
+      console.log(x, y);
+      if (vertical === true) {
+        y++;
+      } else {
+        x++;
+      }
+      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+      tablero.map[x][y] = 1;
+      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+      
+    }
+    createBoard(tablero);
+    if (n<p1.fleet.length)
+    {n++
+    setListener()}
+  }
+  const test1 = () => {};
+  test1();
+}
+
+function testVari(e, hola) {}
+function floatingFleet(tablero, vertical, size, e) {
+  let x = getX(e.target);
+  let y = getY(e.target);
+
   console.log("coordenadas", x, y);
   if (checkIfPossible(tablero, x, y, vertical, size)) {
     drawShip(tablero, x, y, true, 4);
     putFleet();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function getX(element) {
   return parseInt(element.getAttribute("x"));
