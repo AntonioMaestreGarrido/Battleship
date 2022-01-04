@@ -1,10 +1,15 @@
-export function test2() {
-  console.log("log");
-}
-export function checkIfPossible(tablero, x, y, vertical, size) {
+
+export function checkIfPossible(tablero, x, y, ship) {
+  try{
+  if ( isNaN(x) ||  isNaN(y)) {
+    console.log("NNWAAAANNNNN")
+    return false
+       
+  }
+  console.log(ship)
   var possible = true;
-    var x=parseInt (x)
-    var y=parseInt (y)
+   let vertical=ship.orienVert
+   let size=ship.body.length
   if (vertical) {
     let xPlus = x;
     let xMinus = x;
@@ -81,4 +86,7 @@ export function checkIfPossible(tablero, x, y, vertical, size) {
     }
   }
   return possible;
+}catch(err){
+  return false;
+}
 }

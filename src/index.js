@@ -3,8 +3,14 @@
 //import { array } from "yargs";
 //import './styles.css';
 
-import { test, createBoard } from "./dom.js";
-import { checkIfPossible, test2 } from "./testShip.js";
+import {
+  test,
+  drawPosible,
+  createBoard,
+  casillaAddClass,
+  casillaRemoveClass,
+} from "./dom.js";
+import { checkIfPossible } from "./testShip.js";
 
 var flotaStandar = [
   ["portaaviones", 6],
@@ -17,6 +23,7 @@ var flotaStandar = [
 const factoryShips = (name, size) => {
   var body = new Array(size);
   var coord = new Array(size);
+  var orienVert = true;
   const sunk = false;
   var IDnumber;
   const ID = () => {
@@ -57,7 +64,7 @@ const factoryShips = (name, size) => {
   })();
   ini(body);
 
-  return { name, body, hit, isSunk, coord };
+  return { name, body, hit, isSunk, coord, orienVert };
 };
 
 const Gameboard = (size) => {
@@ -125,12 +132,6 @@ const factoryPlayer = (nombre) => {
   return { nombre, fleet, resolveAttack };
 };
 
-let tablero = Gameboard(10);
-console.log(tablero);
-let p1 = factoryPlayer("pp");
-createBoard(tablero);
-console.log(p1);
-
 const putRandomFleet = (tablero) => {
   let boardSize = 10;
 
@@ -174,11 +175,9 @@ const putRandomFleet = (tablero) => {
       x = Math.floor(Math.random() * maxX);
       y = Math.floor(Math.random() * maxY);
     }
-    console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
 
-    console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
     tablero.map[x][y] = 1;
-    console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+
     createBoard(tablero);
     for (let i = 1; i < tam; i++) {
       console.log(x, y);
@@ -187,9 +186,9 @@ const putRandomFleet = (tablero) => {
       } else {
         x++;
       }
-      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+
       tablero.map[x][y] = 1;
-      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
+
       createBoard(tablero);
     }
   }
@@ -198,56 +197,182 @@ const putRandomFleet = (tablero) => {
 
   createBoard(tablero);
 };
+var tablero = Gameboard(10);
+var p1 = factoryPlayer("pp");
+const FlotaJugador = function () {
+  createBoard(tablero);
+  const checkFleet = () => {
+    if (typeof FlotaJugador.n === "undefined") {
+      FlotaJugador.n = 0;
+    } else {
+      FlotaJugador.n++;
+    }
+  };
+  checkFleet();
 
-function setListener() {
+  setListener(tablero, p1.fleet[FlotaJugador.n]);
+};
+
+FlotaJugador();
+
+function setListener(tablero, ship) {
+  console.log(ship);
+
+  const bigDiv = document.querySelector("#board1");
+  addClickHandler(bigDiv, tablero, ship);
+  add2ClickHandler(bigDiv, tablero, ship);
+
+  addEnterHandler(bigDiv,true, tablero, ship);
+  saleCursor();
+}
+function test4(){
+  console.log("H")
+}
+function removeListener() {
   const casillas = document.querySelectorAll(".casilla");
-  casillas.forEach((casilla) => {
-    //casilla.addEventListener("mouseenter", putFleet);
-    casilla.addEventListener("click", putFleet);
+  casillas.forEach((elem) => {
+  elem.removeEventListener(
+  "mouseenter",
+  test2,
+  true)})
     
+  
+}
+
+function addClickHandler(elem, tablero, ship) {
+  elem.addEventListener("click", function (e) {
+    console.log(ship.orienVert);
+    if (ship.orienVert) {
+      ship.orienVert = false;
+    } else {
+      ship.orienVert = true;
+    }
+    if (!checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
+      if (ship.orienVert) {
+        ship.orienVert = false;
+      } else {
+        ship.orienVert = true;
+      }
+    }
+    saleCursor();
+    drawShip(tablero, getX(e.target), getY(e.target), ship);
+    console.log(ship.orienVert);
+    addEnterHandler(document.querySelector("#board1"),false, tablero, ship);
+  });
+}
+function addEnterHandler(elem, add,tablero, ship) {
+  const casillas = document.querySelectorAll(".casilla");
+  
+  if(!addEnterHandler.test2){
+
+   addEnterHandler.test2 = (e) => {
+    console.log("test22222222222222222222");
+    
+    let x = getX(e.target);
+    let y = getY(e.target);
+    if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
+      saleCursor();
+      drawShip(tablero, x, y, ship);
+    }
+  };}
+  if (add){
+
+  
+  const test3 = (e) => {
+    console.log("test333333333333333333333333");
+    
+    
+    let x = getX(e.target);
+    let y = getY(e.target);
+    console.log(ship);
+    if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
+      saleCursor();
+      drawShip(tablero, x, y, ship);
+    }
+  };
+ // document.querySelector("#board1").addEventListener("mouseenter", test3, true);
+  //document.querySelector("#board1").addEventListener("mouseenter", test2, true);
+  
+  casillas.forEach((elem) => {
+    
+  elem.addEventListener(
+  "mouseenter",
+  addEnterHandler.test2,
+  true
+
+  // console.log( checkIfPossible(tablero,getX(e.target),getY(e.target),ship))
+
+  // in the event handler function here, you can directly refer
+  // to arg1 and arg2 from the parent function arguments
+  );
+  });}
+  else{
+    console.log(addEnterHandler.test2)
+  casillas.forEach((elem) => {
+  elem.removeEventListener(
+  "mouseenter",
+  addEnterHandler.test2,
+  true)})}
+}
+
+function add2ClickHandler(elem, tablero, ship) {
+  elem.addEventListener("dblclick", function (e) {
+    console.log("2click");
+
+    if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
+    }
+
+    ponShip(tablero, getX(e.target), getY(e.target), ship);
   });
 }
 
-setListener();
-var n = 0;
-function putFleet(e) {
-  let x = getX(e.target);
-  let y = getY(e.target);
-  
-  var tam = p1.fleet[n].body.length;
-  var vertical = true;
-  console.log(checkIfPossible(tablero, x, y, vertical, tam))
-  if (checkIfPossible(tablero, x, y, vertical, tam)){
-    for (let i = 0; i < tam; i++) {
-      console.log(x, y);
-      if (vertical === true) {
-        y++;
-      } else {
-        x++;
-      }
-      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
-      tablero.map[x][y] = 1;
-      console.log("x = " + x + " y = " + y + " = " + tablero.map[x][y]);
-      
+function ponShip(tablero, x, y, ship) {
+  let vertical = ship.orienVert;
+  let tam = ship.body.length;
+  let Cx = x;
+  let Cy = y;
+
+  for (let i = 0; i < tam; i++) {
+    //console.log(x, y);
+    if (vertical === true) {
+      Cy = y + i;
+    } else {
+      Cx = x + i;
     }
-    createBoard(tablero);
-    if (n<p1.fleet.length)
-    {n++
-    setListener()}
+
+    tablero.map[Cx][Cy] = 1;
   }
-  const test1 = () => {};
-  test1();
+  createBoard(tablero);
+  removeListener();
 }
 
-function testVari(e, hola) {}
-function floatingFleet(tablero, vertical, size, e) {
-  let x = getX(e.target);
-  let y = getY(e.target);
+function saleCursor() {
+  const casillas = document.querySelectorAll(".posible");
 
-  console.log("coordenadas", x, y);
-  if (checkIfPossible(tablero, x, y, vertical, size)) {
-    drawShip(tablero, x, y, true, 4);
-    putFleet();
+  casillas.forEach((c) => {
+    c.classList.remove("posible");
+  });
+
+  console.log("sale");
+  // createBoard(tablero)
+  // setListener()
+}
+
+function drawShip(tablero, x, y, ship) {
+  let Cx = x;
+  let Cy = y;
+  var tam = ship.body.length;
+  let vertical = ship.orienVert;
+
+  for (let i = 0; i < tam; i++) {
+    //console.log(x, y);
+    if (vertical === true) {
+      Cy = y + i;
+    } else {
+      Cx = x + i;
+    }
+
+    casillaAddClass(Cx, Cy, "posible");
   }
 }
 
@@ -257,18 +382,4 @@ function getX(element) {
 
 function getY(element) {
   return parseInt(element.getAttribute("y"));
-}
-function drawShip(tablero, x, y, vertical, size) {
-  +console.log(tablero);
-  if (vertical) {
-    for (let i = 0; i < size; i++) {
-      tablero.map[x][y + i] = 1;
-    }
-  }
-  if (!vertical) {
-    for (let i = 0; i < size; i++) {
-      tablero.map[x + i][y] = 1;
-    }
-  }
-  createBoard(tablero);
 }
