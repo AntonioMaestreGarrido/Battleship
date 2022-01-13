@@ -1,7 +1,8 @@
 //factorry ships
 
 //import { array } from "yargs";
-//import './styles.css';
+//import './styles.css';+
+//tetststststts
 
 import {
   test,
@@ -11,13 +12,13 @@ import {
   casillaRemoveClass,
 } from "./dom.js";
 import { checkIfPossible } from "./testShip.js";
-
-var flotaStandar = [
+console.log("hla");
+const flotaStandar = [
   ["portaaviones", 6],
   ["destructor", 5],
   ["acorazado", 3],
-  ["destructor", 3],
-  ["acorazado", 2],
+  ["submarino", 3],
+  ["lancha", 2],
 ];
 
 const factoryShips = (name, size) => {
@@ -132,74 +133,39 @@ const factoryPlayer = (nombre) => {
   return { nombre, fleet, resolveAttack };
 };
 
-const putRandomFleet = (tablero) => {
-  let boardSize = 10;
+function ramdonPosition(tablero, jugador) {
+  console.log(jugador);
+  let x, y, ship;
+  for (let i = 0; i < jugador.fleet.length; i++) {
+    console.log(jugador.fleet.length);
+    ship = jugador.fleet[i];
 
-  for (let i = 0; i < flotaStandar.length; i++) {
-    var vertical = false;
-    var maxX;
-    var maxY;
-    console.log("longitud=" + flotaStandar[i][1]);
-    if (Math.floor(Math.random() * 2) ? (vertical = true) : (vertical = false));
+    do {
+      x = Math.floor(Math.random() * 10);
+      y = Math.floor(Math.random() * 10);
+      Math.floor(Math.random() * 2) == 0
+        ? (ship.orienVert = true)
+        : (ship.orienVert = false);
+    } while (!checkIfPossible(tablero, x, y, ship));
 
-    var tam = flotaStandar[i][1];
-    if (vertical) {
-      maxY = 9 - tam;
-      maxX = 9;
-    } else {
-      {
-        maxX = 9 - tam;
-        maxY = 9;
-      }
-    }
-    console.log("tamaños maximos", tam, maxX, maxY);
-
-    var x = Math.floor(Math.random() * maxX);
-    var y = Math.floor(Math.random() * maxY);
-    while (!checkIfPossible(tablero, x, y, vertical, tam)) {
-      if (
-        Math.floor(Math.random() * 2) == 0
-          ? (vertical = true)
-          : (vertical = false)
-      );
-      if (vertical) {
-        maxY = 9 - tam;
-        maxX = 9;
-      } else {
-        {
-          maxX = 9 - tam;
-          maxY = 9;
-        }
-      }
-
-      x = Math.floor(Math.random() * maxX);
-      y = Math.floor(Math.random() * maxY);
-    }
-
-    tablero.map[x][y] = 1;
-
-    createBoard(tablero);
-    for (let i = 1; i < tam; i++) {
-      console.log(x, y);
-      if (vertical === true) {
-        y++;
-      } else {
-        x++;
-      }
-
-      tablero.map[x][y] = 1;
-
-      createBoard(tablero);
-    }
+    jugador.fleet[i] = ponShip(tablero, x, y, ship);
   }
-
-  console.log(vertical);
-
   createBoard(tablero);
-};
-var tablero = Gameboard(10);
-var p1 = factoryPlayer("pp");
-const FlotaJugador = function () {
+}
+console.log("hla");
+var p1 = factoryPlayer("you");
+console.log(p1);
+var p2 = factoryPlayer("Computer");
+var tablero1 = Gameboard(10);
+
+var tablero2 = Gameboard(10);
+//ramdonPosition(tablero1,p1)
+console.log(p1);
+//createBoard(tablero1)
+createBoard(tablero1);
+PutPlayerFleet(p1, tablero1);
+
+const FlotaJugador = function (jugador, tablero) {
   createBoard(tablero);
   const checkFleet = () => {
     if (typeof FlotaJugador.n === "undefined") {
@@ -212,35 +178,50 @@ const FlotaJugador = function () {
 
   setListener(tablero, p1.fleet[FlotaJugador.n]);
 };
+function PutPlayerFleet(player, tablero) {
+  if (PutPlayerFleet.n === undefined) {
+    PutPlayerFleet.n = 0;
+  } else {
+    PutPlayerFleet.n++;
+  }
+  console.log(PutPlayerFleet.n);
+  console.log(player.fleet[PutPlayerFleet.n]);
+  setListener(tablero, player.fleet[PutPlayerFleet.n], player);
+}
+function getNextShip(){
+  for (let i = 0; i < p1.fleet.length; i++) {
+    if(p1.fleet[i].coord[0][0]===undefined){
+      return p1.fleet[i]
+    }
+    
+  }
+return false
+}
 
-FlotaJugador();
-
-function setListener(tablero, ship) {
+function setListener(tablero, ship, player) {
   console.log(ship);
 
   const bigDiv = document.querySelector("#board1");
   addClickHandler(bigDiv, tablero, ship);
-  add2ClickHandler(bigDiv, tablero, ship);
+  add2ClickHandler(bigDiv, tablero, ship, player);
 
-  addEnterHandler(bigDiv,true, tablero, ship);
+  addEnterHandler(bigDiv,  tablero, ship);
   saleCursor();
 }
-function test4(){
-  console.log("H")
+function test4() {
+  console.log("H");
 }
 function removeListener() {
   const casillas = document.querySelectorAll(".casilla");
   casillas.forEach((elem) => {
-  elem.removeEventListener(
-  "mouseenter",
-  test2,
-  true)})
-    
-  
+    elem.removeEventListener("mouseenter", test2, true);
+  });
 }
 
-function addClickHandler(elem, tablero, ship) {
-  elem.addEventListener("click", function (e) {
+function addClickHandler(elem, tablero, ship,remove) {
+
+  function hey (e) {
+    ship=getNextShip()
     console.log(ship.orienVert);
     if (ship.orienVert) {
       ship.orienVert = false;
@@ -255,33 +236,19 @@ function addClickHandler(elem, tablero, ship) {
       }
     }
     saleCursor();
+    console.log(ship);
     drawShip(tablero, getX(e.target), getY(e.target), ship);
-    console.log(ship.orienVert);
-    addEnterHandler(document.querySelector("#board1"),false, tablero, ship);
-  });
+  }
+  
+  
+  elem.addEventListener("click",hey );
 }
-function addEnterHandler(elem, add,tablero, ship) {
-  const casillas = document.querySelectorAll(".casilla");
-  
-  if(!addEnterHandler.test2){
-
-   addEnterHandler.test2 = (e) => {
-    console.log("test22222222222222222222");
-    
-    let x = getX(e.target);
-    let y = getY(e.target);
-    if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
-      saleCursor();
-      drawShip(tablero, x, y, ship);
-    }
-  };}
-  if (add){
-
-  
-  const test3 = (e) => {
-    console.log("test333333333333333333333333");
-    
-    
+function addEnterHandler(elem,  tablero, ship) {
+  ship=getNextShip()
+  elem.removeEventListener("mouseenter", hey, true);
+  elem.addEventListener("mouseenter", hey, true);
+  function  hey (e)  {
+    ship=getNextShip()
     let x = getX(e.target);
     let y = getY(e.target);
     console.log(ship);
@@ -290,40 +257,22 @@ function addEnterHandler(elem, add,tablero, ship) {
       drawShip(tablero, x, y, ship);
     }
   };
- // document.querySelector("#board1").addEventListener("mouseenter", test3, true);
+  // document.querySelector("#board1").addEventListener("mouseenter", test3, true);
   //document.querySelector("#board1").addEventListener("mouseenter", test2, true);
-  
-  casillas.forEach((elem) => {
-    
-  elem.addEventListener(
-  "mouseenter",
-  addEnterHandler.test2,
-  true
-
-  // console.log( checkIfPossible(tablero,getX(e.target),getY(e.target),ship))
-
-  // in the event handler function here, you can directly refer
-  // to arg1 and arg2 from the parent function arguments
-  );
-  });}
-  else{
-    console.log(addEnterHandler.test2)
-  casillas.forEach((elem) => {
-  elem.removeEventListener(
-  "mouseenter",
-  addEnterHandler.test2,
-  true)})}
 }
 
-function add2ClickHandler(elem, tablero, ship) {
-  elem.addEventListener("dblclick", function (e) {
+function add2ClickHandler(elem, tablero, ship, player) {
+  function hey(e) {
     console.log("2click");
 
     if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
     }
 
-    ponShip(tablero, getX(e.target), getY(e.target), ship);
-  });
+    ship = ponShip(tablero, getX(e.target), getY(e.target), ship);
+    elem.removeEventListener("dblclick", hey);
+    PutPlayerFleet(p1, tablero);
+  }
+  elem.addEventListener("dblclick", hey);
 }
 
 function ponShip(tablero, x, y, ship) {
@@ -331,6 +280,7 @@ function ponShip(tablero, x, y, ship) {
   let tam = ship.body.length;
   let Cx = x;
   let Cy = y;
+  console.log("before", ship.coord[0][0]);
 
   for (let i = 0; i < tam; i++) {
     //console.log(x, y);
@@ -340,10 +290,12 @@ function ponShip(tablero, x, y, ship) {
       Cx = x + i;
     }
 
-    tablero.map[Cx][Cy] = 1;
+    tablero.map[Cx][Cy] = ship.body[i];
+    ship.coord[i][0] = Cx;
+    ship.coord[i][1] = Cy;
   }
   createBoard(tablero);
-  removeListener();
+  return ship;
 }
 
 function saleCursor() {
