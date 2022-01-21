@@ -3,6 +3,29 @@
 //import { array } from "yargs";
 //import './styles.css';+
 //tetststststts
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
+} 
+var beep=new sound("/sounds/beep-04.wav")
+beep.play()
+document.querySelector("#myModal").style.display = "block";
+document.querySelector("#general").style.display = "none";
+document.querySelector(".close").onclick = function() {
+  console.log(document.querySelector("#myModal").style.display)
+  document.querySelector("#myModal").style.display = "none";
+  document.querySelector("#general").style.display = "flex";
+}
 
 import {
   test,
@@ -10,19 +33,23 @@ import {
   createBoard,
   casillaAddClass,
   casillaRemoveClass,
+  marcaCasila,
+  marcaHundido,
 } from "./dom.js";
 import { checkIfPossible } from "./testShip.js";
 console.log("hla");
 const flotaStandar = [
   ["portaaviones", 6],
   ["destructor", 5],
-  ["acorazado", 3],
+  ["acorazado", 4],
   ["submarino", 3],
+  ["submarino", 3],
+  ["lancha", 2],
   ["lancha", 2],
 ];
 
 const factoryShips = (name, size) => {
-  var body = new Array(size);
+  const body = new Array(size);
   var coord = new Array(size);
   var orienVert = true;
   const sunk = false;
@@ -42,8 +69,11 @@ const factoryShips = (name, size) => {
   };
 
   const hit = (p) => {
-    if (body[p] !== 0) {
-      body[p] = 0;
+    for (let i = 0; i < body.length; i++) {
+      if (body[i] == p) {
+        body[i] = 0;
+        console.log("hundido?" + isSunk());
+      }
     }
   };
   const isSunk = () => {
@@ -51,6 +81,7 @@ const factoryShips = (name, size) => {
     body.forEach((p) => {
       if (p !== 0) {
         sunk = false;
+        return sunk;
       }
     });
 
@@ -88,13 +119,13 @@ const Gameboard = (size) => {
         }
       }
     }
-    console.log("no se  encontro nada");
+    console.log("Game Over");
     return true;
   };
 
   const receiveAttack = (x, y) => {
     if (map[x][y] <= 0) {
-      map[x][y] = -1;
+      map[x][y] = -2;
       return "miss";
     } else {
       let n = map[x][y];
@@ -119,6 +150,9 @@ const factoryPlayer = (nombre) => {
     fleet.push(factoryShips(ship[0], ship[1]));
   });
   const resolveAttack = (n) => {
+    if (!n) {
+      return;
+    }
     fleet.forEach((ship) => {
       let position = 0;
       ship.body.forEach((b, p) => {
@@ -150,20 +184,27 @@ function ramdonPosition(tablero, jugador) {
 
     jugador.fleet[i] = ponShip(tablero, x, y, ship);
   }
-  createBoard(tablero);
+  //createBoard(tablero);
 }
 console.log("hla");
 var p1 = factoryPlayer("you");
-console.log(p1);
 var p2 = factoryPlayer("Computer");
-var tablero1 = Gameboard(10);
 
+var tablero1 = Gameboard(10);
 var tablero2 = Gameboard(10);
+
+
+createBoard(tablero1, "board1");
+//createBoard(tablero2, "board2");
+
+PutPlayerFleet(p1,tablero1)
 //ramdonPosition(tablero1,p1)
 console.log(p1);
 //createBoard(tablero1)
-createBoard(tablero1);
-PutPlayerFleet(p1, tablero1);
+//createBoard(tablero2,"board2");
+//PutPlayerFleet(p1, tablero1);
+
+gameloop();
 
 const FlotaJugador = function (jugador, tablero) {
   createBoard(tablero);
@@ -176,26 +217,29 @@ const FlotaJugador = function (jugador, tablero) {
   };
   checkFleet();
 
-  setListener(tablero, p1.fleet[FlotaJugador.n]);
+  //setListener(tablero, p1.fleet[FlotaJugador.n]);
 };
 function PutPlayerFleet(player, tablero) {
   if (PutPlayerFleet.n === undefined) {
     PutPlayerFleet.n = 0;
+    setListener(tablero, player.fleet[PutPlayerFleet.n], player);
   } else {
     PutPlayerFleet.n++;
   }
-  console.log(PutPlayerFleet.n);
-  console.log(player.fleet[PutPlayerFleet.n]);
-  setListener(tablero, player.fleet[PutPlayerFleet.n], player);
-}
-function getNextShip(){
-  for (let i = 0; i < p1.fleet.length; i++) {
-    if(p1.fleet[i].coord[0][0]===undefined){
-      return p1.fleet[i]
-    }
-    
+  if(PutPlayerFleet.n==flotaStandar.length){
+    createBoard(tablero2,"board2");
+    ramdonPosition(tablero2, p2);
   }
-return false
+  console.log("puttplayerrr "+PutPlayerFleet.n);
+  console.log(player.fleet[PutPlayerFleet.n]);
+}
+function getNextShip() {
+  for (let i = 0; i < p1.fleet.length; i++) {
+    if (p1.fleet[i].coord[0][0] === undefined) {
+      return p1.fleet[i];
+    }
+  }
+  return false;
 }
 
 function setListener(tablero, ship, player) {
@@ -205,7 +249,7 @@ function setListener(tablero, ship, player) {
   addClickHandler(bigDiv, tablero, ship);
   add2ClickHandler(bigDiv, tablero, ship, player);
 
-  addEnterHandler(bigDiv,  tablero, ship);
+  addEnterHandler(bigDiv, tablero, ship);
   saleCursor();
 }
 function test4() {
@@ -218,45 +262,37 @@ function removeListener() {
   });
 }
 
-function addClickHandler(elem, tablero, ship,remove) {
-
-  function hey (e) {
-    ship=getNextShip()
+function addClickHandler(elem, tablero, ship, remove) {
+  function hey(e) {
+    ship = getNextShip();
     console.log(ship.orienVert);
     if (ship.orienVert) {
       ship.orienVert = false;
     } else {
       ship.orienVert = true;
     }
-    if (!checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
-      if (ship.orienVert) {
-        ship.orienVert = false;
-      } else {
-        ship.orienVert = true;
-      }
-    }
+    
+    
     saleCursor();
     console.log(ship);
     drawShip(tablero, getX(e.target), getY(e.target), ship);
   }
-  
-  
-  elem.addEventListener("click",hey );
+
+  elem.addEventListener("click", hey);
 }
-function addEnterHandler(elem,  tablero, ship) {
-  ship=getNextShip()
+function addEnterHandler(elem, tablero, ship) {
   elem.removeEventListener("mouseenter", hey, true);
   elem.addEventListener("mouseenter", hey, true);
-  function  hey (e)  {
-    ship=getNextShip()
+  function hey(e) {
+    ship = getNextShip();
     let x = getX(e.target);
     let y = getY(e.target);
-    console.log(ship);
+    //console.log(ship);
+    saleCursor();
+    drawShip(tablero, x, y, ship);
     if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
-      saleCursor();
-      drawShip(tablero, x, y, ship);
     }
-  };
+  }
   // document.querySelector("#board1").addEventListener("mouseenter", test3, true);
   //document.querySelector("#board1").addEventListener("mouseenter", test2, true);
 }
@@ -264,13 +300,14 @@ function addEnterHandler(elem,  tablero, ship) {
 function add2ClickHandler(elem, tablero, ship, player) {
   function hey(e) {
     console.log("2click");
-
+    ship = getNextShip();
     if (checkIfPossible(tablero, getX(e.target), getY(e.target), ship)) {
-    }
+    
 
     ship = ponShip(tablero, getX(e.target), getY(e.target), ship);
-    elem.removeEventListener("dblclick", hey);
+    //elem.removeEventListener("dblclick", hey);
     PutPlayerFleet(p1, tablero);
+    createBoard(tablero, "board1");}
   }
   elem.addEventListener("dblclick", hey);
 }
@@ -294,7 +331,7 @@ function ponShip(tablero, x, y, ship) {
     ship.coord[i][0] = Cx;
     ship.coord[i][1] = Cy;
   }
-  createBoard(tablero);
+  //createBoard(tablero);
   return ship;
 }
 
@@ -334,4 +371,48 @@ function getX(element) {
 
 function getY(element) {
   return parseInt(element.getAttribute("y"));
+}
+
+function addEventListenerForPlay() {
+  const board = document.querySelector("#board2");
+  board.addEventListener("click", click);
+}
+function click(e) {
+  let x = getX(e.target);
+  let y = getY(e.target);
+  if (tablero2.map[x][y]<0){return}
+  let computerShoot
+  console.log(tablero1.map);
+  console.log(tablero2.map[x][y]);
+  console.log(tablero1.map[x][y]);
+  p2.resolveAttack(tablero2.receiveAttack(x, y));
+  marcaCasila(board2, x, y, tablero2.map[x][y]);
+  marcaHundido(p2, "board2");
+  
+  console.log(tablero2.isGameOver());
+  computerShoot=randomHit(tablero1);
+  //computerShoot[0]=x
+  //computerShoot[1]=y
+  p1.resolveAttack(tablero1.receiveAttack(computerShoot[0],computerShoot[1]));
+  marcaCasila(board1, computerShoot[0], computerShoot[1], tablero1.map[computerShoot[0]][computerShoot[1]]);
+  marcaHundido(p1, "board1");
+}
+function gameloop() {
+  console.log("loop");
+
+  addEventListenerForPlay();
+}
+function randomHit(tablero) {
+  let coor = new Array();
+  let x,y;
+  do{
+    x=Math.floor(Math.random() * 10)
+    y=Math.floor(Math.random() * 10)
+    
+    
+  } while (tablero.map[x][y]<0) 
+  coor.push(x);
+  coor.push(y);
+
+  return coor;
 }

@@ -23,8 +23,11 @@ export function checkIfPossible(tablero, x, y, ship) {
         yMinus = y - 1;
       }
       if (y + size < 9) {
-        yMax = y + size;
-      }
+        yMax = y + size ;
+      }else{yMax=9}
+      console.log(
+        `ymax=${yMax} and x =${x} tablero.map[xMax][y]=${tablero.map[x][yMax]}`
+      );
       if (tablero.map[x][yMinus] != 0 || tablero.map[x][yMax] != 0) {
         possible = false;
         return possible;
@@ -47,10 +50,12 @@ export function checkIfPossible(tablero, x, y, ship) {
       if (x > 0) {
         xMinus = x - 1;
       }
-      if (x + size < 9) {
-        xMax = x + size;
-      }
-
+      if (x + size  < 9) {
+        xMax = x + size ;
+      }else{xMax=9}
+      console.log(
+        `xmax=${xMax} and y =${y} tablero.map[xMax][y]=${tablero.map[xMax][y]}`
+      );
       if (tablero.map[xMax][y] != 0 || tablero.map[xMinus][y] != 0) {
         possible = false;
         return possible;
