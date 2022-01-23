@@ -1,12 +1,12 @@
 
-const flotaStandar = [
+export const flotaStandar = [
     ["portaaviones", 6],
     ["destructor", 5],
-    ["acorazado", 4],
+   /* ["acorazado", 4],
     ["submarino", 3],
     ["submarino", 3],
     ["lancha", 2],
-    ["lancha", 2],
+    ["lancha", 2],*/,
   ];
 export const factoryShips = (name, size) => {
     const body = new Array(size);
