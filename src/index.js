@@ -10,6 +10,7 @@ document.querySelector(".close").onclick = function() {
   console.log(document.querySelector("#myModal").style.display)
   document.querySelector("#myModal").style.display = "none";
   document.querySelector("#general").style.display = "flex";
+  const log=document.querySelector('#log')
 }
 import * as Factory from './factorys.js'
 import * as Setup from './setup.js'
@@ -39,19 +40,20 @@ console.log("hla");
 
 
 Factory.factoryPlayer("q")
-var p1 = Factory.factoryPlayer("you");
-var p2 = Factory.factoryPlayer("Computer");
+ window.p1 = Factory.factoryPlayer("you");
+ window.p2 = Factory.factoryPlayer("Computer");
 
-var tablero1 = Factory.Gameboard(10);
-var tablero2 = Factory.Gameboard(10);
+ window.tablero1 = Factory.Gameboard(10);
+ window.tablero2 = Factory.Gameboard(10);
 
 
 createBoard(tablero1, "board1");
 //createBoard(tablero2, "board2");
 
-Setup.ramdonPosition(tablero2,p2)
+
 Setup.PutPlayerFleet(p1,tablero1)
 console.log(p1);
+
 //createBoard(tablero1)
 //createBoard(tablero2,"board2");
 //PutPlayerFleet(p1, tablero1);
@@ -64,6 +66,9 @@ gameloop();
 
 
 function addEventListenerForPlay() {
+  console.log("wwwwwwwwwwwwwwwwww"+log.style.display)
+  log.style.display='flex'
+  log.innerText="Suerte"
   const board = document.querySelector("#board2");
   board.addEventListener("click", click);
 }
@@ -72,9 +77,7 @@ function click(e) {
   let y = getY(e.target);
   if (tablero2.map[x][y]<0){return}
   let computerShoot
-  console.log(tablero1.map);
-  console.log(tablero2.map[x][y]);
-  console.log(tablero1.map[x][y]);
+  
   p2.resolveAttack(tablero2.receiveAttack(x, y));
   marcaCasila(board2, x, y, tablero2.map[x][y]);
   marcaHundido(p2, "board2");
@@ -105,4 +108,11 @@ function randomHit(tablero) {
   coor.push(y);
 
   return coor;
+}
+function getX(element) {
+  return parseInt(element.getAttribute("x"));
+}
+
+function getY(element) {
+  return parseInt(element.getAttribute("y"));
 }

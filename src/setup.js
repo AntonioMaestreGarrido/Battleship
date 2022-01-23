@@ -45,8 +45,12 @@ export function PutPlayerFleet(player, tablero) {
     PutPlayerFleet.n++;
   }
   if (PutPlayerFleet.n == flotaStandar.length) {
-      let tablero2=Gameboard(10)
-    createBoard(tablero2, "board2");
+      
+    createBoard(window.tablero2, "board2");
+    ramdonPosition(window.tablero2,p2)
+    console.log(document.querySelector('#log').style.display)
+
+    document.querySelector('#info').style.display='flex' 
     
   }
   console.log("puttplayerrr " + PutPlayerFleet.n);
