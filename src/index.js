@@ -3,22 +3,7 @@
 //import { array } from "yargs";
 //import './styles.css';+
 //tetststststts
-function sound(src) {
-  this.sound = document.createElement("audio");
-  this.sound.src = src;
-  this.sound.setAttribute("preload", "auto");
-  this.sound.setAttribute("controls", "none");
-  this.sound.style.display = "none";
-  document.body.appendChild(this.sound);
-  this.play = function(){
-    this.sound.play();
-  }
-  this.stop = function(){
-    this.sound.pause();
-  }
-} 
-var beep=new sound("/sounds/beep-04.wav")
-beep.play()
+
 document.querySelector("#myModal").style.display = "block";
 document.querySelector("#general").style.display = "none";
 document.querySelector(".close").onclick = function() {
@@ -26,7 +11,7 @@ document.querySelector(".close").onclick = function() {
   document.querySelector("#myModal").style.display = "none";
   document.querySelector("#general").style.display = "flex";
 }
-
+import * as Factory from './factorys.js'
 import {
   test,
   drawPosible,
@@ -48,124 +33,14 @@ const flotaStandar = [
   ["lancha", 2],
 ];
 
-const factoryShips = (name, size) => {
-  const body = new Array(size);
-  var coord = new Array(size);
-  var orienVert = true;
-  const sunk = false;
-  var IDnumber;
-  const ID = () => {
-    if (typeof factoryShips.IDnumber === "undefined") {
-      factoryShips.IDnumber = 0;
-    }
-    factoryShips.IDnumber++;
-    return factoryShips.IDnumber;
-  };
 
-  var ini = (body) => {
-    for (let i = 0; i < body.length; i++) {
-      body[i] = ID();
-    }
-  };
 
-  const hit = (p) => {
-    for (let i = 0; i < body.length; i++) {
-      if (body[i] == p) {
-        body[i] = 0;
-        console.log("hundido?" + isSunk());
-      }
-    }
-  };
-  const isSunk = () => {
-    let sunk = true;
-    body.forEach((p) => {
-      if (p !== 0) {
-        sunk = false;
-        return sunk;
-      }
-    });
 
-    return sunk;
-  };
 
-  // make a 2d array to hold coord (x,y) of every piece of the ship
-  (() => {
-    for (let i = 0; i < body.length; i++) {
-      coord[i] = new Array(2);
-    }
-  })();
-  ini(body);
 
-  return { name, body, hit, isSunk, coord, orienVert };
-};
 
-const Gameboard = (size) => {
-  const map = new Array(size);
-  const make2Darray = (map) => {
-    for (let i = 0; i < map.length; i++) {
-      map[i] = new Array(size);
-      for (let j = 0; j < map.length; j++) {
-        map[i][j] = 0;
-      }
-    }
-  };
-  make2Darray(map);
 
-  const isGameOver = () => {
-    for (let i = 0; i < map.length; i++) {
-      for (let j = 0; j < map.length; j++) {
-        if (map[i][j] > 0) {
-          return false;
-        }
-      }
-    }
-    console.log("Game Over");
-    return true;
-  };
 
-  const receiveAttack = (x, y) => {
-    if (map[x][y] <= 0) {
-      map[x][y] = -2;
-      return "miss";
-    } else {
-      let n = map[x][y];
-      map[x][y] = -1;
-
-      return n;
-    }
-  };
-  const deployShip = (ship) => {
-    for (let i = 0; i < ship.body.length; i++) {
-      let x = ship.coord[i][0];
-      let y = ship.coord[i][1];
-      map[x][y] = ship.body[i];
-    }
-  };
-  return { map, isGameOver, receiveAttack, deployShip };
-};
-
-const factoryPlayer = (nombre) => {
-  const fleet = new Array();
-  flotaStandar.forEach((ship) => {
-    fleet.push(factoryShips(ship[0], ship[1]));
-  });
-  const resolveAttack = (n) => {
-    if (!n) {
-      return;
-    }
-    fleet.forEach((ship) => {
-      let position = 0;
-      ship.body.forEach((b, p) => {
-        console.log(n);
-        if (b == n) {
-          console.log("hit");
-          ship.hit(n);
-        }
-      });
-    });
-  };
-  return { nombre, fleet, resolveAttack };
-};
 
 function ramdonPosition(tablero, jugador) {
   console.log(jugador);
@@ -186,12 +61,13 @@ function ramdonPosition(tablero, jugador) {
   }
   //createBoard(tablero);
 }
-console.log("hla");
-var p1 = factoryPlayer("you");
-var p2 = factoryPlayer("Computer");
+Factory.test("how")
+Factory.factoryPlayer("q")
+var p1 = Factory.factoryPlayer("you");
+var p2 = Factory.factoryPlayer("Computer");
 
-var tablero1 = Gameboard(10);
-var tablero2 = Gameboard(10);
+var tablero1 = Factory.Gameboard(10);
+var tablero2 = Factory.Gameboard(10);
 
 
 createBoard(tablero1, "board1");
