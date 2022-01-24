@@ -77,7 +77,7 @@ function click(e) {
   let y = getY(e.target);
   if (tablero2.map[x][y]<0){return}
   let computerShoot
-  
+  //alert(p2.resolveAttack(tablero2.receiveAttack(x, y)))
   p2.resolveAttack(tablero2.receiveAttack(x, y));
   marcaCasila(board2, x, y, tablero2.map[x][y]);
   marcaHundido(p2, "board2");

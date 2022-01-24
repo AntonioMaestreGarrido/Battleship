@@ -2,11 +2,11 @@ const log=document.querySelector('#log')
 export const flotaStandar = [
     ["Un Portaaviones", 6],
     ["Un Destructor", 5],
-   /* ["acorazado", 4],
-    ["submarino", 3],
-    ["submarino", 3],
-    ["lancha", 2],
-    ["lancha", 2],*/
+    ["Un Acorazado", 4],
+    ["Un Submarino", 3],
+    ["Un Submarino", 3],
+    ["Una Lancha", 2],
+    ["Una Lancha", 2]
   ];
 export const factoryShips = (name, size) => {
     const body = new Array(size);
@@ -32,9 +32,10 @@ export const factoryShips = (name, size) => {
       for (let i = 0; i < body.length; i++) {
         if (body[i] == p) {
           body[i] = 0;
-          console.log("hundido?" + isSunk());
+          
         }
       }
+      if(isSunk()){ log.innerText="Has Hundido "+name}
     };
     const isSunk = () => {
       let sunk = true;
@@ -44,7 +45,7 @@ export const factoryShips = (name, size) => {
           return sunk;
         }
       });
-      log.innerText="Has Hundido "+name
+     
       return sunk;
     };
   
