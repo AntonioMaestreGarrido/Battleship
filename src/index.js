@@ -1,7 +1,7 @@
 //factorry ships
 
 //import { array } from "yargs";
-//import './styles.css';+
+//import './styles.css';
 //tetststststts
 
 document.querySelector("#myModal").style.display = "block";
@@ -82,13 +82,14 @@ function click(e) {
   marcaCasila(board2, x, y, tablero2.map[x][y]);
   marcaHundido(p2, "board2");
   
-  console.log(tablero2.isGameOver());
+ 
   computerShoot=randomHit(tablero1);
   //computerShoot[0]=x
   //computerShoot[1]=y
   p1.resolveAttack(tablero1.receiveAttack(computerShoot[0],computerShoot[1]));
   marcaCasila(board1, computerShoot[0], computerShoot[1], tablero1.map[computerShoot[0]][computerShoot[1]]);
   marcaHundido(p1, "board1");
+  if ( tablero2.isGameOver()){alert("you win");document.location.reload();}
 }
 function gameloop() {
   console.log("loop");
